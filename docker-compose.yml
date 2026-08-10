@@ -1,0 +1,18 @@
+# Trivy-Scanner: Orchestrierung laeuft ueber scan.sh + systemd-Timer (One-Shot),
+# nicht als Dauer-Container. Diese Compose-Datei dient nur dem Cache-Volume und
+# einem manuellen Ad-hoc-Scan via `docker compose run`.
+services:
+  trivy:
+    image: aquasec/trivy:0.58.1   # TODO: vor Prod per @sha256-Digest pinnen
+    profiles: ["manual"]
+    mem_limit: 1g
+    volumes:
+      - trivy-cache:/root/.cache/trivy
+    security_opt:
+      - no-new-privileges:true
+    # Beispiel: docker compose run --rm trivy image --severity HIGH,CRITICAL <image>
+    entrypoint: ["trivy"]
+
+volumes:
+  trivy-cache:
+    name: trivy-cache

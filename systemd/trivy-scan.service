@@ -1,0 +1,18 @@
+[Unit]
+Description=Trivy CVE-Scan ueber alle laufenden Docker-Images
+Documentation=file:/home/user/docker/trivy-scanner/README.md
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=oneshot
+# Off-peak. Auf RAM-engem Host (host) bewusst nur 1x taeglich + mem_limit.
+Environment=TRIVY_MEM_LIMIT=1g
+# Optional ntfy aktivieren (Topic-ACL muss existieren):
+# Environment=NTFY_URL=http://ntfy NTFY_TOPIC=homelab-cve
+ExecStart=/usr/bin/env bash /home/user/docker/trivy-scanner/scan.sh
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

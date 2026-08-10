@@ -1,0 +1,11 @@
+[Unit]
+Description=Taeglicher Trivy CVE-Scan (off-peak)
+
+[Timer]
+# 04:15 lokal — vor Backups (04:30), nach den naechtlichen Prunes.
+OnCalendar=*-*-* 04:15:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
