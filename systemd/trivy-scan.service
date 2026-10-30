@@ -1,0 +1,20 @@
+[Unit]
+Description=Trivy CVE-Scan ueber alle laufenden Docker-Images
+Documentation=file:/home/user/docker/trivy-scanner/README.md
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=oneshot
+# Off-peak. Auf RAM-engem Host (host) bewusst nur 1x taeglich + mem_limit.
+Environment=TRIVY_MEM_LIMIT=1g
+# ntfy scharf (deny-all -> sec-publisher-Token, Topic homelab-security):
+Environment=NTFY_URL=http://127.0.0.1:8147
+Environment=NTFY_TOPIC=homelab-security
+Environment=NTFY_TOKEN_FILE=/home/user/.config/ntfy/sec-publisher.token
+ExecStart=/usr/bin/env bash /home/user/docker/trivy-scanner/scan.sh
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target
